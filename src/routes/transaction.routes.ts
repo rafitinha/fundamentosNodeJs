@@ -1,15 +1,15 @@
 import { Router } from 'express';
-
-// import TransactionsRepository from '../repositories/TransactionsRepository';
-// import CreateTransactionService from '../services/CreateTransactionService';
+import Transaction from '../models/Transaction';
+import CreateTransactionService from '../services/CreateTransactionService';
 
 const transactionRouter = Router();
 
-// const transactionsRepository = new TransactionsRepository();
+const createTransactionService = new CreateTransactionService();
 
 transactionRouter.get('/', (request, response) => {
   try {
-    // TODO
+    const transaction = createTransactionService.all();
+    return response.json(transaction);
   } catch (err) {
     return response.status(400).json({ error: err.message });
   }
@@ -17,7 +17,10 @@ transactionRouter.get('/', (request, response) => {
 
 transactionRouter.post('/', (request, response) => {
   try {
-    // TODO
+    const data: Omit<Transaction, 'id'> = request.body;
+    const createTransaction = new Transaction(data);
+    const transaction = createTransactionService.execute(createTransaction);
+    return response.json(transaction);
   } catch (err) {
     return response.status(400).json({ error: err.message });
   }
